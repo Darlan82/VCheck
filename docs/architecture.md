@@ -31,7 +31,7 @@ O objetivo deste documento é detalhar o design de uma solução completa para o
 
 ## 2. Visão Arquitetural e Decisões de Alto Nível
 
-A arquitetura proposta adota uma abordagem desacoplada entre o frontend e o backend, permitindo que cada parte seja otimizada com as ferramentas mais adequadas.
+Esta arquitetura adota uma abordagem desacoplada entre frontend e backend, permitindo que cada parte seja otimizada com as ferramentas mais adequadas. Toda a infraestrutura será provisionada exclusivamente via Terraform, garantindo automação, rastreabilidade e governança desde o início do projeto.
 
 ### 2.1. Arquitetura Backend: Modular Monolítico
 
@@ -57,6 +57,10 @@ A tabela a seguir conecta explicitamente os atributos de qualidade desejados com
 | **Controle Orçamentário** | **Uso de serviços Serverless/Consumption** (SQL, Functions, Static Web Apps) para alinhar custos ao uso. |
 | **Auditabilidade** | Implementação de logging estruturado (ex: Serilog) para **Azure Monitor**, capturando todas as ações. |
 
+| **Automação e Governança de Infraestrutura** | **Provisionamento completo via Terraform**, incluindo todos os recursos Azure necessários. |
+| **Qualidade e Complexidade do Código** | **Implantação do SonarQube** com métricas simples para garantir baixa carga cognitiva e facilitar a evolução do código. |
+| **Testes Automatizados e Validação de Arquitetura** | **Cobertura dos principais fluxos de negócio e validação da arquitetura via testes automatizados**, executados no pipeline CI/CD. |
+
 ---
 
 ## 3. Design da Solução
@@ -73,8 +77,8 @@ graph TD
         U[Usuário via Navegador]
     end
     
-    U -- "1. Login (Redirecionamento OAuth 2.0)" <--> IDP
-    IDP -- "2. Retorna com JWT" --> U
+    U --|1. Login (Redirecionamento OAuth 2.0)|<--> IDP
+    IDP --|2. Retorna com JWT--> U
 
     subgraph "Borda da Rede (CDN)"
         CDN["Azure CDN<br>(Ponto de Entrada Único)"]
@@ -87,18 +91,18 @@ graph TD
         DB[("Azure SQL DB<br>Serverless")]
     end
 
-    U -- "3. Solicita o site" --> CDN
-    CDN -- "4. Entrega arquivos estáticos" --> SWA
-    SWA -- "Conteúdo" --> CDN
-    CDN -- "Resposta" --> U
+    U --|3. Solicita o site --> CDN
+    CDN --|4. Entrega arquivos estáticos --> SWA
+    SWA --|Conteúdo --> CDN
+    CDN --|Resposta --> U
 
-    U -- "5. Chama a API com JWT" --> CDN
-    CDN -- "6. Roteia chamada da API" --> APIM
-    APIM -- "7. VALIDA O JWT e aplica políticas" --> API
-    API -- "8. Processa lógica de negócio" <--> DB
-    API -- "9. Retorna dados (JSON)" --> APIM
-    APIM -- "Resposta" --> CDN
-    CDN -- "Resposta" --> U
+    U --|5. Chama a API com JWT --> CDN
+    CDN --|6. Roteia chamada da API --> APIM
+    APIM --|7. VALIDA O JWT e aplica políticas --> API
+    API --|8. Processa lógica de negócio <--> DB
+    API --|9. Retorna dados (JSON) --> APIM
+    APIM --|Resposta --> CDN
+    CDN --|Resposta --> U
 ```
 
 ### 3.2. O Papel Duplo da CDN: Ativos Estáticos e Cache de API
@@ -125,13 +129,20 @@ A segurança da aplicação é garantida por uma solução de identidade central
     3.  A aplicação frontend anexa este JWT a cada chamada para a API no cabeçalho `Authorization: Bearer <token>`.
     4.  O **Azure API Management** atua como nosso portão de segurança. Sua política de validação de JWT inspeciona cada token recebido (verifica assinatura, expiração, emissor) **antes** de permitir que a requisição prossiga para o nosso backend. Isso protege nossa API e simplifica seu código.
 
+
 ### 3.4. Detalhes dos Componentes
 
-*   **Frontend & CDN (Azure Static Web Apps):** Esta é a escolha estratégica para hospedar a aplicação frontend. O Azure Static Web Apps é um serviço que combina a hospedagem de ativos estáticos com uma **CDN global integrada e sem custo adicional**, além de CI/CD simplificado a partir do código-fonte. Ele atende perfeitamente aos nossos requisitos de performance e baixo custo.
+*   **Infraestrutura como Código (IaC) via Terraform:** Todo o provisionamento de recursos Azure será realizado exclusivamente com Terraform, incluindo App Service, Static Web Apps, banco de dados, CDN, API Management e demais componentes necessários. Isso garante automação, versionamento e governança desde o início.
 
-*   **Backend API Modular (.NET 8 em Azure App Service):** Serve como o cérebro da operação, expondo uma API REST segura. É responsável por toda a lógica de negócio, validações e comunicação com o banco de dados. Sua natureza monolítica e modular simplifica o desenvolvimento e a implantação iniciais.
+*   **Frontend & CDN (Azure Static Web Apps):** Hospedagem da aplicação SPA com CDN global integrada, CI/CD simplificado e baixo custo operacional.
 
-*   **Azure SQL Database (Nível Serverless):** O repositório de dados, atendendo ao requisito do cliente. O nível Serverless otimiza os custos ao escalar a computação com base na demanda, ideal para o estágio inicial do produto.
+*   **Backend API Modular (.NET 8 em Azure App Service):** API REST segura, lógica de negócio, validações e comunicação com o banco de dados. Estrutura monolítica modular para facilitar evolução futura.
+
+*   **Azure SQL Database (Nível Serverless):** Repositório de dados escalável e econômico.
+
+*   **Testes Automatizados:** Cobertura dos principais fluxos de negócio e validação da arquitetura, com execução obrigatória no pipeline CI/CD.
+
+*   **SonarQube:** Implantação de SonarQube para análise de qualidade e complexidade do código, utilizando métricas simples para garantir baixa carga cognitiva e facilitar a evolução do projeto.
 
 ### 3.5. Resolvendo o Desafio da Concorrência com SQL Server
 
@@ -151,12 +162,13 @@ A API, consumida pelo frontend, seguirá as melhores práticas RESTful.
 
 ## 5. Conclusão e Plano de Evolução Futura
 
-A arquitetura **Modular Monolítica** proposta, combinada com uma entrega de frontend otimizada por **CDN**, é a escolha estratégica ideal para o cenário atual do negócio. Ela é rápida para o usuário final, econômica, ágil para o desenvolvimento e, crucialmente, está pronta para o futuro.
 
-Este design não é estático; ele é o primeiro passo em uma jornada evolutiva. A transição para uma arquitetura de microservices será considerada quando gatilhos específicos de negócio e técnicos forem atingidos, tais como:
+A arquitetura **Modular Monolítica** proposta, com entrega de frontend otimizada por **CDN** e infraestrutura provisionada integralmente via **Terraform**, é a escolha estratégica ideal para o cenário atual do negócio. O projeto será validado continuamente por testes automatizados e métricas de qualidade via SonarQube, garantindo agilidade, baixo custo operacional e preparação para evolução futura.
 
-*   **Gatilho de Performance:** Um módulo específico (ex: um futuro módulo de Analytics ou Relatórios) se torna um gargalo de performance, exigindo recursos de escalonamento dedicados que o monólito não pode fornecer eficientemente.
-*   **Gatilho de Agilidade de Negócio:** A necessidade de iterar e implantar um módulo de negócio (ex: Gestão de Veículos) em uma cadência muito mais rápida do que os outros, tornando o ciclo de implantação unificado do monólito um impedimento.
-*   **Gatilho de Complexidade de Domínio:** O volume de checklists cresce exponencialmente, tornando a otimização de custo e performance de um banco de dados NoSQL (como o Cosmos DB) para esse domínio específico uma vantagem competitiva clara.
+Este design não é estático; ele é o primeiro passo em uma jornada evolutiva. A transição para microserviços será considerada quando gatilhos específicos de negócio e técnicos forem atingidos, tais como:
 
-Ao planejar esses gatilhos, garantimos que a arquitetura possa evoluir de forma reativa e justificada, sempre alinhada às necessidades do negócio.
+*   **Gatilho de Performance:** Módulo específico se torna gargalo e exige escalonamento dedicado.
+*   **Gatilho de Agilidade de Negócio:** Necessidade de implantar módulos em cadência diferente do restante do sistema.
+*   **Gatilho de Complexidade de Domínio:** Crescimento exponencial do volume de dados, justificando adoção de NoSQL ou arquitetura distribuída.
+
+Todos os processos de validação, testes e análise de qualidade serão executados automaticamente no pipeline CI/CD, promovendo governança, rastreabilidade e evolução contínua do projeto.
