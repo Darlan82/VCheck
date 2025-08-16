@@ -31,7 +31,10 @@ O objetivo deste documento é detalhar o design de uma solução completa para o
 
 ## 2. Visão Arquitetural e Decisões de Alto Nível
 
-Esta arquitetura adota uma abordagem desacoplada entre frontend e backend, permitindo que cada parte seja otimizada com as ferramentas mais adequadas. Toda a infraestrutura será provisionada exclusivamente via Terraform, garantindo automação, rastreabilidade e governança desde o início do projeto.
+Esta arquitetura adota uma abordagem desacoplada entre frontend e backend, permitindo que cada parte seja otimizada com as ferramentas mais adequadas. Para evitar confusões entre ambientes e responsabilidades, adotamos duas responsabilidades distintas para provisionamento de infraestrutura:
+
+- Provisionamento local (desenvolvedores): o Aspire será o mecanismo canônico para provisionar ambientes locais — containers, imagens, emuladores e configuração necessária para que cada desenvolvedor execute a pilha completa com baixa fricção.
+- Provisionamento cloud/produção: o Terraform será usado em pipelines de CI/CD e por operadores para provisionar recursos cloud e produção que não podem ser emulados localmente (CDN global, API Management gerenciado, Azure SQL em produção, redes cross-subscription, etc.).
 
 ### 2.1. Arquitetura Backend: Modular Monolítico
 
@@ -57,7 +60,7 @@ A tabela a seguir conecta explicitamente os atributos de qualidade desejados com
 | **Controle Orçamentário** | **Uso de serviços Serverless/Consumption** (SQL, Functions, Static Web Apps) para alinhar custos ao uso. |
 | **Auditabilidade** | Implementação de logging estruturado (ex: Serilog) para **Azure Monitor**, capturando todas as ações. |
 
-| **Automação e Governança de Infraestrutura** | **Provisionamento completo via Terraform**, incluindo todos os recursos Azure necessários. |
+| **Automação e Governança de Infraestrutura** | **Aspire para provisionamento local (dev); Terraform em CI/ops para provisionamento de produção e recursos não emulados localmente.** |
 | **Qualidade e Complexidade do Código** | **Implantação do SonarQube** com métricas simples para garantir baixa carga cognitiva e facilitar a evolução do código. |
 | **Testes Automatizados e Validação de Arquitetura** | **Cobertura dos principais fluxos de negócio e validação da arquitetura via testes automatizados**, executados no pipeline CI/CD. |
 
@@ -132,7 +135,10 @@ A segurança da aplicação é garantida por uma solução de identidade central
 
 ### 3.4. Detalhes dos Componentes
 
-*   **Infraestrutura como Código (IaC) via Terraform:** Todo o provisionamento de recursos Azure será realizado exclusivamente com Terraform, incluindo App Service, Static Web Apps, banco de dados, CDN, API Management e demais componentes necessários. Isso garante automação, versionamento e governança desde o início.
+*   **Infraestrutura (Aspire + Terraform):**
+
+    - **Aspire (experiência de desenvolvedor):** fornece o provisionamento local e a composição do ambiente para execução na máquina do desenvolvedor — imagens, containers e wiring de dependências locais. Aspire é a forma recomendada para levantar o ambiente em dev machines.
+    - **Terraform (CI/ops):** usado para provisionar recursos cloud e produção que não são adequadamente emulados localmente (CDN, APIM gerenciado, recursos de produção do Azure SQL, storage/provisionamento global). Terraform será executado a partir de pipelines automatizados ou por operadores com credenciais adequadas.
 
 *   **Frontend & CDN (Azure Static Web Apps):** Hospedagem da aplicação SPA com CDN global integrada, CI/CD simplificado e baixo custo operacional.
 
@@ -163,7 +169,7 @@ A API, consumida pelo frontend, seguirá as melhores práticas RESTful.
 ## 5. Conclusão e Plano de Evolução Futura
 
 
-A arquitetura **Modular Monolítica** proposta, com entrega de frontend otimizada por **CDN** e infraestrutura provisionada integralmente via **Terraform**, é a escolha estratégica ideal para o cenário atual do negócio. O projeto será validado continuamente por testes automatizados e métricas de qualidade via SonarQube, garantindo agilidade, baixo custo operacional e preparação para evolução futura.
+A arquitetura **Modular Monolítica** proposta, com entrega de frontend otimizada por **CDN** e um fluxo de provisionamento híbrido (Aspire para ambientes locais; Terraform para produção/CI), é a escolha estratégica ideal para o cenário atual do negócio. O projeto será validado continuamente por testes automatizados e métricas de qualidade via SonarQube, garantindo agilidade, controle de custos e preparação para evolução futura.
 
 Este design não é estático; ele é o primeiro passo em uma jornada evolutiva. A transição para microserviços será considerada quando gatilhos específicos de negócio e técnicos forem atingidos, tais como:
 
