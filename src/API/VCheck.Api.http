@@ -1,0 +1,6 @@
+@VCheck.Api_HostAddress = http://localhost:5147
+
+GET {{VCheck.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

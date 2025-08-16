@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/API/">
+    <Project Path="API/VCheck.Api.csproj" />
+  </Folder>
+  <Folder Name="/AppHost/">
+    <Project Path="AppHost/VCheck.AppHost.AppHost.csproj" />
+  </Folder>
+  <Folder Name="/Modules/" />
+  <Folder Name="/Modules/Checklists/">
+    <Project Path="Modules/Checklists/VCheck.Modules.Checklists.csproj" />
+  </Folder>
+  <Folder Name="/Modules/Fleet/">
+    <Project Path="Modules/Fleet/VCheck.Modules.Fleet.csproj" />
+  </Folder>
+  <Folder Name="/SharedKernel/">
+    <Project Path="SharedKernel/VCheck.SharedKernel.csproj" />
+  </Folder>
+</Solution>
