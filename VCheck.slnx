@@ -23,8 +23,8 @@
   <Folder Name="/src/API/">
     <Project Path="src/API/VCheck.Api.csproj" />
   </Folder>
-  <Folder Name="/src/AppHost/">
-    <Project Path="src/AppHost/VCheck.AppHost.AppHost.csproj" />
+  <Folder Name="/src/Host/">
+    <Project Path="src/Host/VCheck.Host.csproj" />
   </Folder>
   <Folder Name="/src/Modules/" />
   <Folder Name="/src/Modules/Checklists/">
