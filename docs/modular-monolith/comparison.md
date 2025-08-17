@@ -1,4 +1,4 @@
-[Voltar ao README](README.md) | [Comparação](comparison.md)
+[Voltar ao README](README.md)
 
 ## Desafios do Monolito Modular
 
@@ -10,4 +10,4 @@ Embora o Monolito Modular ofereça benefícios, apresenta desafios específicos:
 
 Em .NET, resolva isso com interfaces contratuais e injeção de dependência (DI) via ASP.NET Core.
 
-Para soluções, veja [Definição de Módulos](defining-modules.md) e [Comunicação entre Módulos](module-communication.md).
+Para soluções, veja [Comunicação entre Módulos](module-communication.md).

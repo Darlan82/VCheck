@@ -1,4 +1,4 @@
-[Voltar ao README](README.md) | [-> Arquitetura Interna](module-architecture.md)
+[Voltar ao README](README.md) | [Arquitetura Interna](module-architecture.md)
 
 ## Comunicação entre Módulos
 

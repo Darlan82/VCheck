@@ -1,4 +1,4 @@
-[< Voltar ao README](README.md) | [Comunicação >](module-communication.md)
+[Voltar ao README](README.md) | [Comunicação](module-communication.md)
 
 ## Exemplos em .NET
 
