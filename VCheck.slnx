@@ -1,0 +1,33 @@
+<Solution>
+  <Folder Name="/docs/">
+    <File Path="docs/core_business.md" />
+    <File Path="docs/system_design.md" />
+  </Folder>
+  <Folder Name="/infra/">
+    <File Path="infra/main.tf" />
+    <File Path="infra/outputs.tf" />
+    <File Path="infra/README.md" />
+    <File Path="infra/variables.tf" />
+  </Folder>
+  <Folder Name="/infra/environments/">
+    <File Path="infra/environments/dev.tfvars" />
+    <File Path="infra/environments/prod.tfvars" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/API/">
+    <Project Path="src/API/VCheck.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/AppHost/">
+    <Project Path="src/AppHost/VCheck.AppHost.AppHost.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Checklists/">
+    <Project Path="src/Modules/Checklists/VCheck.Modules.Checklists/VCheck.Modules.Checklists.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Fleet/">
+    <Project Path="src/Modules/Fleet/VCheck.Modules.Fleet/VCheck.Modules.Fleet.csproj" />
+  </Folder>
+  <Folder Name="/src/SharedKernel/">
+    <Project Path="src/SharedKernel/VCheck.SharedKernel.csproj" />
+  </Folder>
+</Solution>

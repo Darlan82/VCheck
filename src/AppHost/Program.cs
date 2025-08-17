@@ -11,8 +11,8 @@ if (!builder.ExecutionContext.IsPublishMode)
 {
     var senha = builder.AddParameter("pwdSql", "S3nh@F0rte123!");
     vcheckDb = (IResourceBuilder<IResourceWithConnectionString>)
-    builder.AddSqlServer(sqlName, senha, port: 5433) // Provisions a containerized SQL Server database when published
-      .WithDataVolume() //Opicional - Mantem os dados entre as builds
+    builder.AddSqlServer(sqlName, senha, port: 5433) 
+      .WithDataVolume() //Opicional - Mantem os dados
       .AddDatabase(dbName);
 }
 else
@@ -23,7 +23,7 @@ else
 
 // 2. Recurso de Autenticação (Keycloak)
 var keycloak = builder.AddKeycloak("keycloak")
-    .WithDataVolume()
+    .WithDataVolume() //Opicional - Mantem os dados
     .WithRealmImport("./KeycloackConfiguration/vcheck-realm.json");
 
 keycloak.WithEnvironment("KEYCLOAK_ADMIN_PASSWORD", "admin");

@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Modules\Checklists\VCheck.Modules.Checklists.csproj" />
-    <ProjectReference Include="..\Modules\Fleet\VCheck.Modules.Fleet.csproj" />
+    <ProjectReference Include="..\Modules\Checklists\VCheck.Modules.Checklists\VCheck.Modules.Checklists.csproj" />
+    <ProjectReference Include="..\Modules\Fleet\VCheck.Modules.Fleet\VCheck.Modules.Fleet.csproj" />
   </ItemGroup>
 
 </Project>
