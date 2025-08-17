@@ -17,4 +17,3 @@ O Monolito Modular herda a simplicidade do monolito (um deployment, transações f
 
 Em .NET, use soluções com múltiplos projetos para módulos, compartilhando um banco de dados inicial mas isolando lógica de negócios.
 
-Consulte [Desafios](challenges.md) para trade-offs.

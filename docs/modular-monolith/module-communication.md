@@ -1,19 +1,21 @@
-[Voltar ao README](README.md) | [Definição de Módulos](defining-modules.md)
+[Voltar ao README](README.md) | [-> Arquitetura Interna](module-architecture.md)
 
-## Comunicação entre Módulos
+## ComunicaÃ§Ã£o entre MÃ³dulos
 
-No Monolito Modular, a comunicação é via chamadas de método in-memory para performance:
+Uma vez que os mÃ³dulos estÃ£o definidos, Ã© crucial estabelecer como eles se comunicarÃ£o de forma a manter o baixo acoplamento.
 
-- **Vantagens**: Rápida, sem overhead de rede.
-- **Restrições**: Apenas chame APIs públicas de outros módulos para minimizar acoplamento.
-- **Desafios**: Introduz acoplamento em runtime; requer reimplementação ao extrair para microservice (ex: mudar para HTTP).
+### Abordagem 1: Chamadas de MÃ©todo Diretas (In-Memory)
 
-### Diagrama em Mermaid (Exemplo de Comunicação)
+A forma mais simples e performÃ¡tica de comunicaÃ§Ã£o em um monolito Ã© atravÃ©s de chamadas de mÃ©todo diretas. No entanto, elas devem ser feitas com disciplina.
+
 
 ```mermaid
 graph LR
-    A[Orders Module] -->|Method Call| B[Catalog Module]
-    subgraph "Monolith"
-    A
-    B
+    subgraph MÃ³dulo de Pedidos
+        Orders["Componente 'Orders'"]
     end
+    subgraph MÃ³dulo de CatÃ¡logo
+        Catalog["Componente 'Catalog'"]
+    end
+    Orders -- Chamada de MÃ©todo --> Catalog
+```    
