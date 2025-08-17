@@ -1,6 +1,11 @@
+using VCheck.Modules.Fleet;
+using VCheck.Modules.Checklists;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//Módulos
+builder.AddFleetModule();
+builder.AddChecklistsModule();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

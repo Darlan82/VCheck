@@ -1,5 +1,3 @@
-using System;
-
 namespace VCheck.Modules.Fleet
 {
     public class Vehicle
@@ -8,6 +6,6 @@ namespace VCheck.Modules.Fleet
         public string LicensePlate { get; set; } = string.Empty;
         public string Model { get; set; } = string.Empty;
         public int Year { get; set; }
-        public string Status { get; set; } = "Disponível";
+        public VehicleStatus Status { get; set; } = VehicleStatus.Disponivel;
     }
 }

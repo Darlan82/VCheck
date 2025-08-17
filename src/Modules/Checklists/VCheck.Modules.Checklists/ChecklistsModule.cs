@@ -24,14 +24,14 @@ namespace VCheck.Modules.Checklists
             {
                 Id = Guid.NewGuid(),
                 VehicleId = vehicleId,
-                Status = "EmAndamento",
+                Status = ChecklistStatus.EmAndamento,
                 ExecutorId = executorId,
                 StartedAt = DateTime.UtcNow,
                 Items = new[]
                 {
-                    new ChecklistItem { Id = Guid.NewGuid(), Description = "Faróis", Status = "NaoVerificado" },
-                    new ChecklistItem { Id = Guid.NewGuid(), Description = "Nível do Óleo", Status = "NaoVerificado" },
-                    new ChecklistItem { Id = Guid.NewGuid(), Description = "Pneus", Status = "NaoVerificado" }
+                    new ChecklistItem { Id = Guid.NewGuid(), Description = "Faróis", Status = ChecklistItemStatus.NaoVerificado },
+                    new ChecklistItem { Id = Guid.NewGuid(), Description = "Nível do óleo", Status = ChecklistItemStatus.NaoVerificado },
+                    new ChecklistItem { Id = Guid.NewGuid(), Description = "Pneus", Status = ChecklistItemStatus.NaoVerificado }
                 }.ToList()
             };
             _dbContext.Set<Checklist>().Add(checklist);
@@ -39,7 +39,7 @@ namespace VCheck.Modules.Checklists
             return checklist.Id;
         }
 
-        public async Task UpdateChecklistItem(Guid checklistId, Guid itemId, string status, string? observations, byte[] rowVersion, Guid executorId)
+        public async Task UpdateChecklistItem(Guid checklistId, Guid itemId, SharedKernel.ChecklistItemStatus status, string? observations, byte[] rowVersion, Guid executorId)
         {
             var checklist = await _dbContext.Set<Checklist>().Include(c => c.Items).FirstOrDefaultAsync(c => c.Id == checklistId);
 
@@ -50,7 +50,7 @@ namespace VCheck.Modules.Checklists
             var item = checklist.Items.FirstOrDefault(i => i.Id == itemId);
             if (item == null) throw new InvalidOperationException("Item não encontrado.");
 
-            item.Status = status;
+            item.Status = (ChecklistItemStatus) status;
             item.Observations = observations;
 
             await _dbContext.SaveChangesAsync();            
@@ -62,7 +62,7 @@ namespace VCheck.Modules.Checklists
             if (checklist == null) throw new InvalidOperationException("Checklist não encontrado.");
             if (checklist.ExecutorId != executorId) throw new InvalidOperationException("Executor inválido.");
             _dbContext.Entry(checklist).Property(c => c.RowVersion).OriginalValue = rowVersion;
-            checklist.Status = "AguardandoAprovacao";
+            checklist.Status = ChecklistStatus.AguardandoAprovacao;
             checklist.FinishedAt = DateTime.UtcNow;
             
             await _dbContext.SaveChangesAsync();            
@@ -73,7 +73,7 @@ namespace VCheck.Modules.Checklists
             var checklist = await _dbContext.Set<Checklist>().FirstOrDefaultAsync(c => c.Id == checklistId);
             if (checklist == null) throw new InvalidOperationException("Checklist não encontrado.");
             checklist.SupervisorId = supervisorId;
-            checklist.Status = "Aprovado";
+            checklist.Status = ChecklistStatus.Aprovado;
             
             await _dbContext.SaveChangesAsync();            
         }

@@ -1,9 +1,5 @@
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading.Tasks;
 using VCheck.Modules.Fleet.Data;
 using VCheck.SharedKernel;
-//using VCheck.Api.Data;
 
 namespace VCheck.Modules.Fleet
 {
@@ -21,7 +17,7 @@ namespace VCheck.Modules.Fleet
             var vehicle = await _dbContext.Set<Vehicle>().FindAsync(vehicleId);
             if (vehicle == null)
                 return false;
-            return vehicle.Status == "Disponível";
+            return vehicle.Status == VehicleStatus.Disponivel;
         }
 
         public async Task<Guid> CreateVehicle(string licensePlate, string model, int year)
@@ -32,7 +28,7 @@ namespace VCheck.Modules.Fleet
                 LicensePlate = licensePlate,
                 Model = model,
                 Year = year,
-                Status = "Disponível"
+                Status = VehicleStatus.Disponivel
             };
             _dbContext.Set<Vehicle>().Add(vehicle);
             await _dbContext.SaveChangesAsync();

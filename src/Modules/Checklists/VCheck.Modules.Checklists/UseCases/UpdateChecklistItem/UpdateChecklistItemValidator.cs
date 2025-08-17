@@ -8,9 +8,10 @@ namespace VCheck.Modules.Checklists.UseCases.UpdateChecklistItem
 
         public UpdateChecklistItemValidator()
         {
-            RuleFor(x => x.Status)
-                .NotEmpty().WithMessage("O status não pode ser vazio.")
-                .Must(s => AllowedStatuses.Contains(s)).WithMessage("Status inválido.");
+            RuleFor(x => x.Observations)
+               .MaximumLength(ChecklistsConstants.ChecklistItem.ObservationsMaxLength)
+               .WithMessage($"A observação deve ter no máximo {ChecklistsConstants.ChecklistItem.ObservationsMaxLength} caracteres.")
+               ;
 
             RuleFor(x => x.RowVersion)
                 .NotNull().WithMessage("RowVersion não pode ser nulo.");

@@ -1,12 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using VCheck.SharedKernel;
 using VCheck.Modules.Checklists.UseCases.StartChecklist;
 using VCheck.Modules.Checklists.UseCases.UpdateChecklistItem;
+using VCheck.SharedKernel;
 
 namespace VCheck.Api.Controllers
 {

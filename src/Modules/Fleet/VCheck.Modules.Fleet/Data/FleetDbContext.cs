@@ -15,6 +15,24 @@ namespace VCheck.Modules.Fleet.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema("fleet");
+
+            modelBuilder.Entity<Vehicle>(e => {
+                e.HasKey(c => c.Id);
+
+                e.Property(c => c.LicensePlate)
+                    .HasMaxLength(FleetConstants.Vehicle.LicensePlateLength)
+                    .IsRequired();
+
+                e.Property(c => c.Model)
+                    .HasMaxLength(FleetConstants.Vehicle.ModelMaxLength)
+                    .IsRequired();
+
+                e.Property(c => c.Status)
+                    .HasConversion<int>()
+                    .HasColumnType("smallint")
+                    .IsRequired();
+            });
+
             base.OnModelCreating(modelBuilder);
         }
     }

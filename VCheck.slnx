@@ -19,7 +19,10 @@
   <Folder Name="/infra/environments/modular-monolith/">
     <File Path="docs/modular-monolith/README.md" />
   </Folder>
-  <Folder Name="/src/" />
+  <Folder Name="/src/">
+	<File Path="src/AddMigrationFleetModule.ps1" />
+	<File Path="src/AddMigrationChecklistsModule.ps1" />
+  </Folder>
   <Folder Name="/src/API/">
     <Project Path="src/API/VCheck.Api.csproj" />
   </Folder>

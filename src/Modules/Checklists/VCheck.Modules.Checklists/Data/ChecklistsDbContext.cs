@@ -22,13 +22,29 @@ namespace VCheck.Modules.Checklists.Data
                 e.Property(c => c.VehicleId).IsRequired();
                 e.HasIndex(c => c.VehicleId);
 
+                e.Property(c => c.Status)
+                    .HasConversion<short>()
+                    .HasColumnType("smallint")
+                    .IsRequired();
+
                 e.Property(c => c.RowVersion).IsRowVersion();
             });
 
             modelBuilder.Entity<ChecklistItem>(e => {
                 e.HasKey(c => c.Id);
 
-                e.Property(c => c.Description).IsRequired();
+                e.Property(c => c.Description)
+                    .HasMaxLength(ChecklistsConstants.ChecklistItem.DescriptionMaxLength)
+                    .IsRequired();
+
+                e.Property(c => c.Observations)
+                    .HasMaxLength(ChecklistsConstants.ChecklistItem.ObservationsMaxLength)
+                    .IsRequired();
+
+                e.Property(c => c.Status)
+                    .HasConversion<short>()
+                    .HasColumnType("smallint")
+                    .IsRequired();
             });
 
             base.OnModelCreating(modelBuilder);

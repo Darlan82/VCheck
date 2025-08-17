@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace VCheck.Modules.Checklists
@@ -8,7 +6,7 @@ namespace VCheck.Modules.Checklists
     {
         public Guid Id { get; set; }
         public Guid VehicleId { get; set; }
-        public string Status { get; set; } = "Pendente";
+        public ChecklistStatus Status { get; set; } = ChecklistStatus.Pendente;
         public Guid? ExecutorId { get; set; }
         public Guid? SupervisorId { get; set; }
         public DateTime? StartedAt { get; set; }
