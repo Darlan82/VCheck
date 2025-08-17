@@ -1,0 +1,72 @@
+{
+  "realm": "transport",
+  "enabled": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "executor",
+        "description": "Pode executar e preencher checklists."
+      },
+      {
+        "name": "supervisor",
+        "description": "Pode aprovar ou reprovar checklists."
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "user.executor",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "executor"
+      ]
+    },
+    {
+      "username": "user.supervisor",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "supervisor"
+      ]
+    },
+    {
+      "username": "user.comum",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "default-roles-transport"
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "vcheck-api",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "S3cr3t",
+      "directAccessGrantsEnabled": true,
+      "redirectUris": [
+        "*"
+      ]
+    }
+  ]
+}
