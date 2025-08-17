@@ -1,6 +1,41 @@
 @VCheck.Api_HostAddress = http://localhost:5147
 
-GET {{VCheck.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+# Start Checklist (executor)
+POST {{VCheck.Api_HostAddress}}/api/checklists
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "vehicleId": "{{vehicleId}}"
+}
+
+###
+
+# Update Checklist Item (executor)
+PUT {{VCheck.Api_HostAddress}}/api/checklists/{{checklistId}}/items/{{itemId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "status": "Conforme",
+  "observations": "Tudo ok",
+  "rowVersion": "{{rowVersionBase64}}"
+}
+
+###
+
+# Submit Checklist for Approval (executor)
+POST {{VCheck.Api_HostAddress}}/api/checklists/{{checklistId}}/submit
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{{rowVersionJson}}
+
+###
+
+# Approve Checklist (supervisor)
+POST {{VCheck.Api_HostAddress}}/api/checklists/{{checklistId}}/approve
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ###
