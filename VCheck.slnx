@@ -3,6 +3,9 @@
     <File Path="docs/core_business.md" />
     <File Path="docs/system_design.md" />
   </Folder>
+  <Folder Name="/docs/modular-monolith/">
+    <File Path="docs/modular-monolith/README.md" />
+  </Folder>  
   <Folder Name="/infra/">
     <File Path="infra/main.tf" />
     <File Path="infra/outputs.tf" />
@@ -12,6 +15,9 @@
   <Folder Name="/infra/environments/">
     <File Path="infra/environments/dev.tfvars" />
     <File Path="infra/environments/prod.tfvars" />
+  </Folder>
+  <Folder Name="/infra/environments/modular-monolith/">
+    <File Path="docs/modular-monolith/README.md" />
   </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/API/">
