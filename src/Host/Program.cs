@@ -18,12 +18,12 @@ else
 }
 
 // 2. Recurso de Autenticação (Keycloak)
-//var keycloak = builder.AddKeycloak("keycloak")
-//    .WithDataVolume() //Opicional - Mantem os dados
-//    .WithRealmImport("./KeycloackConfiguration/vcheck-realm.json");
+var username = builder.AddParameter("keycloak-admin-user", "admin");
+var password = builder.AddParameter("keycloak-admin-password", "admin", secret: true);
 
-//keycloak.WithEnvironment("KEYCLOAK_ADMIN_PASSWORD", "admin");
-//keycloak.WithEnvironment("KEYCLOAK_ADMIN", "admin");
+var keycloak = builder.AddKeycloak("keycloak", adminUsername: username, adminPassword: password)
+    //.WithDataVolume() //Opicional - Mantem os dados
+    .WithRealmImport("./KeycloackConfiguration/transport-realm.json");
 
 // 3. Migração de Banco de Dados
 var jobFleetMigration = builder.AddProject<Projects.VCheck_Modules_Fleet_MigrationService>("vcheck-fleet-migrationservice")
@@ -34,12 +34,12 @@ var jobChecklistsMigration = builder.AddProject<Projects.VCheck_Modules_Checklis
     .WithReference(vcheckDb).WaitFor(vcheckDb)
     ;
 
-// 4. Recurso da API Principal
-builder.AddProject<Projects.VCheck_Api>("vcheck-api")
+    // 4. Recurso da API Principal
+    builder.AddProject<Projects.VCheck_Api>("vcheck-api")
        .WithReference(vcheckDb).WaitFor(vcheckDb)
        .WaitFor(jobFleetMigration)
        .WaitFor(jobChecklistsMigration)
-       //.WithReference(keycloak).WaitFor(keycloak)
+       .WithReference(keycloak).WaitFor(keycloak)
        ;
 
 builder.Build().Run();
