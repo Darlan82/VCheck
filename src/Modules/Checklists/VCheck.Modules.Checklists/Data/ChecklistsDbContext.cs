@@ -4,6 +4,8 @@ namespace VCheck.Modules.Checklists.Data
 {
     public class ChecklistsDbContext : DbContext
     {
+        public const string schema = "checklists";
+
         public ChecklistsDbContext(DbContextOptions<ChecklistsDbContext> options)
             : base(options)
         {
@@ -14,7 +16,7 @@ namespace VCheck.Modules.Checklists.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema("checklists");
+            modelBuilder.HasDefaultSchema(schema);
 
             modelBuilder.Entity<Checklist>(e => {
                 e.HasKey(c => c.Id);

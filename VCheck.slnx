@@ -31,9 +31,11 @@
   </Folder>
   <Folder Name="/src/Modules/" />
   <Folder Name="/src/Modules/Checklists/">
+    <Project Path="src/Modules/Checklists/VCheck.Modules.Checklists.MigrationService/VCheck.Modules.Checklists.MigrationService.csproj" />
     <Project Path="src/Modules/Checklists/VCheck.Modules.Checklists/VCheck.Modules.Checklists.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Fleet/">
+    <Project Path="src/Modules/Fleet/VCheck.Modules.Fleet.MigrationService/VCheck.Modules.Fleet.MigrationService.csproj" />
     <Project Path="src/Modules/Fleet/VCheck.Modules.Fleet/VCheck.Modules.Fleet.csproj" />
   </Folder>
   <Folder Name="/src/SharedKernel/">

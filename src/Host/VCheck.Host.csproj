@@ -20,6 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\API\VCheck.Api.csproj" />
+    <ProjectReference Include="..\Modules\Checklists\VCheck.Modules.Checklists.MigrationService\VCheck.Modules.Checklists.MigrationService.csproj" />
+    <ProjectReference Include="..\Modules\Fleet\VCheck.Modules.Fleet.MigrationService\VCheck.Modules.Fleet.MigrationService.csproj" />
   </ItemGroup>
 
 </Project>

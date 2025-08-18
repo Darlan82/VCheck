@@ -14,11 +14,29 @@ namespace VCheck.Modules.Checklists
             where TBuilder : IHostApplicationBuilder
         {
             var services = builder.Services;
+
+            builder.AddChecklistsDbContext();
+
+            services.AddScoped<IChecklistsModule, ChecklistsModule>();
+            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+
+            return services;
+        }
+
+        public static IServiceCollection AddChecklistsDbContext<TBuilder>(this TBuilder builder)
+            where TBuilder : IHostApplicationBuilder
+        {
+            var services = builder.Services;
             var configuration = builder.Configuration;
 
             builder.AddSqlServerDbContext<ChecklistsDbContext>("VCheckDb",
                 configureDbContextOptions: opts =>
                 {
+                    opts.UseSqlServer(sql =>
+                    {
+                        sql.MigrationsHistoryTable("__EFMigrationsHistory", ChecklistsDbContext.schema);
+                    });
+
                     if (builder.Environment.IsDevelopment())
                     {
                         opts.EnableDetailedErrors();
@@ -27,9 +45,6 @@ namespace VCheck.Modules.Checklists
                         opts.LogTo(Console.WriteLine);
                     }
                 });
-
-            services.AddScoped<IChecklistsModule, ChecklistsModule>();
-            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
 
             return services;
         }
