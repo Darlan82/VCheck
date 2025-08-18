@@ -27,11 +27,30 @@ na saída da coluna `PORTS` da tabela exemplo:
 
 Nessa caso o endereço fica `tcp:127.0.0.1,53028`.
 
-#### 1.1.3 Criação de Base de dados e população dos dados
+#### 1.1.3 Migração de Banco de Dados
 
-O Aspire executa uma tarefa de migração que está no projeto `MercadoD.Infra.Persistence.Sql.JobMigration` automaticamente. \
-A migração cria as tabelas e somente popula os dados para o desenvolvedor no ambiente de desenvolvimento e
-sua definição está na classe `DbDevInitializer` no projeto `MercadoD.Infra.Persistence.Sql`.
+A manutenção das migrações de cada módulo é facilitada por scripts específicos:
 
-Para saber como trabalhar com a migração do Banco de Dados veja o documento [MercadoD.Infra.Persistence.Sql](../MercadoD.Infra.Persistence.Sql/README.md).
+- Para o módulo de Frota: utilize o script `AddMigrationFleetModule.ps1`.
+- Para o módulo de Checklists: utilize o script `AddMigrationChecklistsModule.ps1`.
+
+Esses scripts automatizam o processo de criação de novas migrações para cada contexto (DbContext) e garantem padronização na nomenclatura (timestamp) e uso do projeto de inicialização correto.
+
+##### 1.1.3.1 Execução dos Jobs de Migração
+
+Cada módulo possui um job de migração dedicado (Worker Service) responsável por aplicar as migrações ao iniciar:
+
+- `VCheck.Modules.Fleet.MigrationService.csproj`
+- `VCheck.Modules.Checklists.MigrationService.csproj`
+
+A orquestração local desses jobs é realizada pelo Host Aspire (`VCheck.Host.csproj`). Ao iniciar o Host (`dotnet run` no projeto Host), 
+ele provisiona os recursos necessários (SQL Server, Keycloak, etc.) e executa automaticamente os jobs de migração para garantir que o banco de 
+dados esteja atualizado conforme os modelos de cada módulo antes de subir a API principal.
+
+Fluxo simplificado de inicialização:
+1. Aspire inicia e provisiona o container do SQL Server.
+2. Jobs de migração dos módulos são executados e aplicam pendências (se existirem).
+3. A API principal somente inicia após a conclusão dos jobs de migração (cadeia de dependências configurada no Host).
+
+
 
