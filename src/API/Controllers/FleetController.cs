@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using VCheck.SharedKernel;
 using VCheck.Modules.Fleet.UseCases.CreateVehicle;
+using VCheck.SharedKernel;
 
 namespace VCheck.Api.Controllers
 {

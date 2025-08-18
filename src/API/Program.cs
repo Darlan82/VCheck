@@ -1,5 +1,6 @@
 using VCheck.Modules.Fleet;
 using VCheck.Modules.Checklists;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,9 +9,9 @@ builder.AddFleetModule();
 builder.AddChecklistsModule();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddFluentValidationAutoValidation();
 
 var app = builder.Build();
 
