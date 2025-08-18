@@ -4,7 +4,7 @@
 
 Este projeto é um Host do .Net Aspire. \
 Ele provisiona e orquestra toda infra estrutura localmente. \
-Para rodar é necessário estar com o docker e estar rodando.
+Para rodar é necessário estar com o docker rodando.
 
 ### 1.1 Banco de dados
 O Host do Aspire provisionará uma imagem do `SQL Server` via `Docker` na inicialização do Host.

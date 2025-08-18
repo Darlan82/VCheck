@@ -1,6 +1,8 @@
 {
   "realm": "transport",
   "enabled": true,
+  "loginWithEmailAllowed": false,
+  "duplicateEmailsAllowed": true,
   "roles": {
     "realm": [
       {
@@ -17,6 +19,10 @@
     {
       "username": "user.executor",
       "enabled": true,
+      "firstName": "User",
+      "lastName": "Executor",
+      "email": "executor@exemplo.com",
+      "emailVerified": true,
       "credentials": [
         {
           "type": "password",
@@ -31,6 +37,10 @@
     {
       "username": "user.supervisor",
       "enabled": true,
+      "firstName": "User",
+      "lastName": "Supervisor",
+      "email": "supervisor@exemplo.com",
+      "emailVerified": true,
       "credentials": [
         {
           "type": "password",
@@ -45,6 +55,10 @@
     {
       "username": "user.comum",
       "enabled": true,
+      "firstName": "User",
+      "lastName": "Comum",
+      "email": "comum@exemplo.com",
+      "emailVerified": true,
       "credentials": [
         {
           "type": "password",
