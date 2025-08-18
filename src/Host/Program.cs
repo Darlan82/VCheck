@@ -22,7 +22,7 @@ var username = builder.AddParameter("keycloak-admin-user", "admin");
 var password = builder.AddParameter("keycloak-admin-password", "admin", secret: true);
 
 var keycloak = builder.AddKeycloak("keycloak", adminUsername: username, adminPassword: password)
-    //.WithDataVolume() //Opicional - Mantem os dados
+    .WithDataVolume() //Opicional - Mantem os dados
     .WithRealmImport("./KeycloackConfiguration/transport-realm.json");
 
 // 3. Migração de Banco de Dados

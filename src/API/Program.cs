@@ -13,6 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddHttpClient();
 
 // Keycloak JWT config via Aspire
 builder.Services.AddAuthentication()
