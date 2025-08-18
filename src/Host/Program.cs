@@ -34,8 +34,8 @@ var jobChecklistsMigration = builder.AddProject<Projects.VCheck_Modules_Checklis
     .WithReference(vcheckDb).WaitFor(vcheckDb)
     ;
 
-    // 4. Recurso da API Principal
-    builder.AddProject<Projects.VCheck_Api>("vcheck-api")
+// 4. Recurso da API Principal
+builder.AddProject<Projects.VCheck_Api>("vcheck-api")
        .WithReference(vcheckDb).WaitFor(vcheckDb)
        .WaitFor(jobFleetMigration)
        .WaitFor(jobChecklistsMigration)

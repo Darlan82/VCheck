@@ -80,6 +80,9 @@
       "directAccessGrantsEnabled": true,
       "redirectUris": [
         "*"
+      ],
+      "webOrigins": [
+        "*"
       ]
     }
   ]
