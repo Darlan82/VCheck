@@ -4,8 +4,6 @@ namespace VCheck.Modules.Checklists.UseCases.UpdateChecklistItem
 {
     public class UpdateChecklistItemValidator : AbstractValidator<UpdateChecklistItemCommand>
     {
-        private static readonly string[] AllowedStatuses = { "Conforme", "NaoConforme", "NaoVerificado" };
-
         public UpdateChecklistItemValidator()
         {
             RuleFor(x => x.Observations)
@@ -13,8 +11,9 @@ namespace VCheck.Modules.Checklists.UseCases.UpdateChecklistItem
                .WithMessage($"A observação deve ter no máximo {ChecklistsConstants.ChecklistItem.ObservationsMaxLength} caracteres.")
                ;
 
-            RuleFor(x => x.RowVersion)
-                .NotNull().WithMessage("RowVersion não pode ser nulo.");
+            RuleFor(x => x.ChecklistsRowVersion)
+                .NotEmpty().WithMessage("O RowVersion não pode ser vazio.")
+                .Must(rowVersion => rowVersion.Length > 0).WithMessage("O RowVersion deve conter dados válidos.");
         }
     }
 }

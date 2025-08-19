@@ -3,6 +3,8 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.OpenApi.Models;
 using VCheck.Modules.Checklists;
 using VCheck.Modules.Fleet;
+using VCheck.Api.Swagger;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +15,12 @@ JsonWebTokenHandler.DefaultInboundClaimTypeMap.Clear();
 builder.AddFleetModule();
 builder.AddChecklistsModule();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(o =>
+    {
+        // Para exibir nomes de enums como strings nas respostas (facilita entendimento)
+        o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddHttpClient();
@@ -52,6 +59,9 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.EnableAnnotations();
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "VCheck API", Version = "v1" });
+
+    // Filtro para descrever enums (valor = nome)
+    c.SchemaFilter<EnumSchemaFilter>();
 
     // Define o esquema de segurança OAuth2
     c.AddSecurityDefinition("OAuth2", new OpenApiSecurityScheme

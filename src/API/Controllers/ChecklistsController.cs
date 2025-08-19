@@ -7,6 +7,7 @@ using VCheck.Modules.Checklists;
 using VCheck.Modules.Checklists.UseCases.StartChecklist;
 using VCheck.Modules.Checklists.UseCases.UpdateChecklistItem;
 using VCheck.Modules.Checklists.DTOs;
+using VCheck.Modules.Checklists.UseCases.SubmitChecklist; // added
 
 namespace VCheck.Api.Controllers
 {
@@ -65,7 +66,7 @@ namespace VCheck.Api.Controllers
         public async Task<IActionResult> UpdateItem(Guid checklistId, Guid itemId, [FromBody] UpdateChecklistItemCommand command)
         {
             var userId = GetUserId();
-            var result = await _checklistsModule.UpdateChecklistItem(checklistId, itemId, command.Status, command.Observations, command.RowVersion, userId);
+            var result = await _checklistsModule.UpdateChecklistItem(checklistId, itemId, command.Status, command.Observations, command.ChecklistsRowVersion, userId);
             if (result != Error.None)
                 return BadRequest(new { error = result.Code, message = result.Description });
 
@@ -80,10 +81,10 @@ namespace VCheck.Api.Controllers
             OperationId = "SubmitChecklist")]
         [SwaggerResponse(204, "Checklist submetido.")]
         [SwaggerResponse(400, "Erro de negócio, concorrência ou estado inválido.")]
-        public async Task<IActionResult> Submit(Guid checklistId, [FromBody] byte[] rowVersion)
+        public async Task<IActionResult> Submit(Guid checklistId, [FromBody] SubmitChecklistCommand command)
         {
             var userId = GetUserId();
-            var result = await _checklistsModule.SubmitForApproval(checklistId, rowVersion, userId);
+            var result = await _checklistsModule.SubmitForApproval(checklistId, command.RowVersion, userId);
             if (result != Error.None)
                 return BadRequest(new { error = result.Code, message = result.Description });
 
