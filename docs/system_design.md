@@ -59,7 +59,6 @@ A tabela a seguir conecta explicitamente os atributos de qualidade desejados com
 | **Escalabilidade (Inicial e Automática)** | **Azure App Service** (escalabilidade do compute) e **Azure SQL Serverless** (escalabilidade do DB). |
 | **Controle Orçamentário** | **Uso de serviços Serverless/Consumption** (SQL, Functions, Static Web Apps) para alinhar custos ao uso. |
 | **Auditabilidade** | Implementação de logging estruturado (ex: Serilog) para **Azure Monitor**, capturando todas as ações. |
-
 | **Automação e Governança de Infraestrutura** | **Aspire para provisionamento local (dev); Terraform em CI/ops para provisionamento de produção e recursos não emulados localmente.** |
 | **Qualidade e Complexidade do Código** | **Implantação do SonarQube** com métricas simples para garantir baixa carga cognitiva e facilitar a evolução do código. |
 | **Testes Automatizados e Validação de Arquitetura** | **Cobertura dos principais fluxos de negócio e validação da arquitetura via testes automatizados**, executados no pipeline CI/CD. |
