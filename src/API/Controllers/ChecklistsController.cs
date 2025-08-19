@@ -19,6 +19,13 @@ namespace VCheck.Api.Controllers
             _checklistsModule = checklistsModule;
         }
 
+        [HttpPost("Teste")]
+        public async Task<IActionResult> Teste()
+        {
+            var userId = GetUserId();
+            return await Task.Run(Ok);
+        }
+
         [HttpPost]
         [Authorize(Roles = "executor")]
         public async Task<IActionResult> Start([FromBody] StartChecklistCommand command)

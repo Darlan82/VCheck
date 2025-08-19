@@ -1,9 +1,12 @@
-using VCheck.Modules.Fleet;
-using VCheck.Modules.Checklists;
 using FluentValidation.AspNetCore;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.OpenApi.Models;
+using VCheck.Modules.Checklists;
+using VCheck.Modules.Fleet;
 
 var builder = WebApplication.CreateBuilder(args);
+
+JsonWebTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 //Módulos
 builder.AddFleetModule();
@@ -15,6 +18,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddHttpClient();
 
+var keycloakUrl = builder.Configuration["services:keycloak:http:0"] ?? "http://localhost:8080";
+
 // Keycloak JWT config via Aspire
 builder.Services.AddAuthentication()
                 .AddKeycloakJwtBearer(
@@ -23,6 +28,12 @@ builder.Services.AddAuthentication()
                     options =>
                     {
                         options.Audience = "vcheck-api";
+
+                        var keycloakUri = new Uri(keycloakUrl);
+                        options.Authority = $"{keycloakUri.Scheme}://{keycloakUri.Authority}/realms/transport";
+
+                        // Diz à API para procurar as roles na claim "roles" do token
+                        options.TokenValidationParameters.RoleClaimType = "roles";
 
                         // For development only - disable HTTPS metadata validation
                         // In production, use explicit Authority configuration instead
@@ -33,7 +44,7 @@ builder.Services.AddAuthentication()
                     });
 
 // Obtém as URLs do Keycloak da configuração
-var keycloakUrl = builder.Configuration["services:keycloak:http:0"] ?? "http://localhost:8080";
+
 var realm = builder.Configuration["Keycloak:Realm"] ?? "transport";
 var clientId = builder.Configuration["Keycloak:Audience"] ?? "vcheck-api";
 var clientSecret = builder.Configuration["Keycloak:Secret"] ?? "S3cr3t";
