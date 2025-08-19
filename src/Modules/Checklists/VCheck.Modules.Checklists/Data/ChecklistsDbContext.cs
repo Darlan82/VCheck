@@ -40,8 +40,7 @@ namespace VCheck.Modules.Checklists.Data
                     .IsRequired();
 
                 e.Property(c => c.Observations)
-                    .HasMaxLength(ChecklistsConstants.ChecklistItem.ObservationsMaxLength)
-                    .IsRequired();
+                    .HasMaxLength(ChecklistsConstants.ChecklistItem.ObservationsMaxLength);
 
                 e.Property(c => c.Status)
                     .HasConversion<short>()

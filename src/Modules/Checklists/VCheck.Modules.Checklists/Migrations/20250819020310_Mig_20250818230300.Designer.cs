@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VCheck.Modules.Checklists.Data;
 
@@ -11,9 +12,11 @@ using VCheck.Modules.Checklists.Data;
 namespace VCheck.Modules.Checklists.Migrations
 {
     [DbContext(typeof(ChecklistsDbContext))]
-    partial class ChecklistsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250819020310_Mig_20250818230300")]
+    partial class Mig_20250818230300
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

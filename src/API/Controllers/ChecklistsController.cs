@@ -19,20 +19,16 @@ namespace VCheck.Api.Controllers
             _checklistsModule = checklistsModule;
         }
 
-        [HttpPost("Teste")]
-        public async Task<IActionResult> Teste()
-        {
-            var userId = GetUserId();
-            return await Task.Run(Ok);
-        }
-
         [HttpPost]
         [Authorize(Roles = "executor")]
         public async Task<IActionResult> Start([FromBody] StartChecklistCommand command)
         {
             var userId = GetUserId();
-            var checklistId = await _checklistsModule.StartNewChecklist(command.VehicleId, userId);
-            return CreatedAtAction(nameof(Start), new { id = checklistId }, null);
+            var result = await _checklistsModule.StartNewChecklist(command.VehicleId, userId);
+            if (result.Item2 != Error.None)
+                return BadRequest(new { error = result.Item2.Code, message = result.Item2.Description });
+
+            return CreatedAtAction(nameof(Start), new { id = result.Item1 }, null);
         }
 
         [HttpPut("{checklistId}/items/{itemId}")]
@@ -40,7 +36,10 @@ namespace VCheck.Api.Controllers
         public async Task<IActionResult> UpdateItem(Guid checklistId, Guid itemId, [FromBody] UpdateChecklistItemCommand command)
         {
             var userId = GetUserId();
-            await _checklistsModule.UpdateChecklistItem(checklistId, itemId, command.Status, command.Observations, command.RowVersion, userId);
+            var result = await _checklistsModule.UpdateChecklistItem(checklistId, itemId, command.Status, command.Observations, command.RowVersion, userId);
+            if (result != Error.None)
+                return BadRequest(new { error = result.Code, message = result.Description });
+
             return NoContent();
         }
 
@@ -49,7 +48,10 @@ namespace VCheck.Api.Controllers
         public async Task<IActionResult> Submit(Guid checklistId, [FromBody] byte[] rowVersion)
         {
             var userId = GetUserId();
-            await _checklistsModule.SubmitForApproval(checklistId, rowVersion, userId);
+            var result = await _checklistsModule.SubmitForApproval(checklistId, rowVersion, userId);
+            if (result != Error.None)
+                return BadRequest(new { error = result.Code, message = result.Description });
+
             return NoContent();
         }
 
@@ -58,7 +60,10 @@ namespace VCheck.Api.Controllers
         public async Task<IActionResult> Approve(Guid checklistId)
         {
             var supervisorId = GetUserId();
-            await _checklistsModule.ApproveChecklist(checklistId, supervisorId);
+            var result = await _checklistsModule.ApproveChecklist(checklistId, supervisorId);
+            if (result != Error.None)
+                return BadRequest(new { error = result.Code, message = result.Description });
+
             return NoContent();
         }
 
