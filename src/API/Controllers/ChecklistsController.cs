@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
 using VCheck.Modules.Checklists.UseCases.StartChecklist;
 using VCheck.Modules.Checklists.UseCases.UpdateChecklistItem;
@@ -10,6 +11,7 @@ namespace VCheck.Api.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize]
+    [SwaggerTag("Fluxos de execução e aprovação de checklists de veículos.")]
     public class ChecklistsController : ControllerBase
     {
         private readonly IChecklistsModule _checklistsModule;
@@ -21,6 +23,12 @@ namespace VCheck.Api.Controllers
 
         [HttpPost]
         [Authorize(Roles = "executor")]
+        [SwaggerOperation(
+            Summary = "Inicia um novo checklist",
+            Description = "Fluxo: Iniciar checklist (executor). Regras: apenas role executor; impede segundo checklist em andamento para o mesmo veículo ou concorrência de executores.",
+            OperationId = "StartChecklist")]
+        [SwaggerResponse(201, "Checklist iniciado.")]
+        [SwaggerResponse(400, "Falha de validação ou já existe checklist em andamento.")]
         public async Task<IActionResult> Start([FromBody] StartChecklistCommand command)
         {
             var userId = GetUserId();
@@ -33,6 +41,12 @@ namespace VCheck.Api.Controllers
 
         [HttpPut("{checklistId}/items/{itemId}")]
         [Authorize(Roles = "executor")]
+        [SwaggerOperation(
+            Summary = "Atualiza item do checklist",
+            Description = "Fluxo: Atualizar item (executor). Regras: somente executor dono; exige RowVersion; proibido após submissão.",
+            OperationId = "UpdateChecklistItem")]
+        [SwaggerResponse(204, "Item atualizado.")]
+        [SwaggerResponse(400, "Erro de negócio, concorrência ou estado inválido.")]
         public async Task<IActionResult> UpdateItem(Guid checklistId, Guid itemId, [FromBody] UpdateChecklistItemCommand command)
         {
             var userId = GetUserId();
@@ -45,6 +59,12 @@ namespace VCheck.Api.Controllers
 
         [HttpPost("{checklistId}/submit")]
         [Authorize(Roles = "executor")]
+        [SwaggerOperation(
+            Summary = "Submete checklist para aprovação",
+            Description = "Fluxo: Submeter (executor). Regras: somente executor dono; exige RowVersion; bloqueia novas alterações de itens.",
+            OperationId = "SubmitChecklist")]
+        [SwaggerResponse(204, "Checklist submetido.")]
+        [SwaggerResponse(400, "Erro de negócio, concorrência ou estado inválido.")]
         public async Task<IActionResult> Submit(Guid checklistId, [FromBody] byte[] rowVersion)
         {
             var userId = GetUserId();
@@ -57,6 +77,12 @@ namespace VCheck.Api.Controllers
 
         [HttpPost("{checklistId}/approve")]
         [Authorize(Roles = "supervisor")]
+        [SwaggerOperation(
+            Summary = "Aprova checklist submetido",
+            Description = "Fluxo: Aprovar checklist (supervisor). Regras: somente role supervisor; estado deve ser Submetido.",
+            OperationId = "ApproveChecklist")]
+        [SwaggerResponse(204, "Checklist aprovado.")]
+        [SwaggerResponse(400, "Checklist não apto ou outro erro de negócio.")]
         public async Task<IActionResult> Approve(Guid checklistId)
         {
             var supervisorId = GetUserId();

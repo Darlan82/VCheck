@@ -15,7 +15,6 @@ builder.AddChecklistsModule();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddHttpClient();
 
@@ -51,6 +50,7 @@ var clientSecret = builder.Configuration["Keycloak:Secret"] ?? "S3cr3t";
 
 builder.Services.AddSwaggerGen(c =>
 {
+    c.EnableAnnotations();
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "VCheck API", Version = "v1" });
 
     // Define o esquema de segurança OAuth2
