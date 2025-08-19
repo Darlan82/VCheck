@@ -1,4 +1,4 @@
-namespace VCheck.Modules.Checklists
+namespace VCheck.Modules.Checklists.Entidades
 {
     public class ChecklistItem
     {

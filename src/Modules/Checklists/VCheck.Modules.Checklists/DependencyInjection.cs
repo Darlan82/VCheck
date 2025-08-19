@@ -18,6 +18,7 @@ namespace VCheck.Modules.Checklists
             builder.AddChecklistsDbContext();
 
             services.AddScoped<IChecklistsModule, ChecklistsModule>();
+            services.AddScoped<IChecklistsQueries, ChecklistsQueries>();
             services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
 
             return services;

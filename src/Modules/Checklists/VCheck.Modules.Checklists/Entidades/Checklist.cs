@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace VCheck.Modules.Checklists
+namespace VCheck.Modules.Checklists.Entidades
 {
     public class Checklist
     {

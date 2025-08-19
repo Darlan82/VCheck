@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using VCheck.Modules.Checklists.Entidades;
 
 namespace VCheck.Modules.Checklists.Data
 {

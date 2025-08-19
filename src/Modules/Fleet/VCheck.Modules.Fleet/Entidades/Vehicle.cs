@@ -1,4 +1,4 @@
-namespace VCheck.Modules.Fleet
+namespace VCheck.Modules.Fleet.Entidades
 {
     public class Vehicle
     {

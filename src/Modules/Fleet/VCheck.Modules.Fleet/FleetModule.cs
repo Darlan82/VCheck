@@ -1,4 +1,5 @@
 using VCheck.Modules.Fleet.Data;
+using VCheck.Modules.Fleet.Entidades;
 using VCheck.SharedKernel;
 
 namespace VCheck.Modules.Fleet

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using VCheck.Modules.Fleet.Entidades;
 
 namespace VCheck.Modules.Fleet.Data
 {

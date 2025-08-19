@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
+using VCheck.SharedKernel;
+using VCheck.Modules.Checklists; 
 using VCheck.Modules.Checklists.UseCases.StartChecklist;
 using VCheck.Modules.Checklists.UseCases.UpdateChecklistItem;
-using VCheck.SharedKernel;
+using VCheck.Modules.Checklists.DTOs;
 
 namespace VCheck.Api.Controllers
 {
@@ -15,10 +17,23 @@ namespace VCheck.Api.Controllers
     public class ChecklistsController : ControllerBase
     {
         private readonly IChecklistsModule _checklistsModule;
+        private readonly IChecklistsQueries _queries;
 
-        public ChecklistsController(IChecklistsModule checklistsModule)
+        public ChecklistsController(IChecklistsModule checklistsModule, IChecklistsQueries queries)
         {
             _checklistsModule = checklistsModule;
+            _queries = queries;
+        }
+
+        [HttpGet("{checklistId}")]
+        [SwaggerOperation(Summary = "Obtém checklist com itens", Description = "Retorna os dados do checklist e seus itens (somente leitura).", OperationId = "GetChecklist")]
+        [SwaggerResponse(200, "Checklist retornado.", typeof(ChecklistDto))]
+        [SwaggerResponse(404, "Checklist não encontrado.")]
+        public async Task<IActionResult> Get(Guid checklistId)
+        {
+            var checklist = await _queries.GetChecklist(checklistId);
+            if (checklist == null) return NotFound();
+            return Ok(checklist);
         }
 
         [HttpPost]
@@ -36,7 +51,7 @@ namespace VCheck.Api.Controllers
             if (result.Item2 != Error.None)
                 return BadRequest(new { error = result.Item2.Code, message = result.Item2.Description });
 
-            return CreatedAtAction(nameof(Start), new { id = result.Item1 }, null);
+            return CreatedAtAction(nameof(Get), new { checklistId = result.Item1 }, null);
         }
 
         [HttpPut("{checklistId}/items/{itemId}")]

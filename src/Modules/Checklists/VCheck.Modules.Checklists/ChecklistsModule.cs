@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using VCheck.Modules.Checklists.Data;
+using VCheck.Modules.Checklists.Entidades;
 using VCheck.SharedKernel;
 
 namespace VCheck.Modules.Checklists
 {
+
     public class ChecklistsModule : IChecklistsModule
     {
         private readonly ChecklistsDbContext _dbContext;
