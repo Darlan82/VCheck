@@ -14,13 +14,13 @@ Este projeto está licenciado sob a licença [MIT](LICENSE).
 
 ## Estrutura do Repositório
 
-- [/docs](/docs)  — Documentação (ver índice em [docs/README.md](docs/README.md)).
+- `/docs`  — Documentação (ver índice em [docs/README.md](docs/README.md)).
 	- Guia rápido de execução: [Getting Started](docs/getting-started.md)
 	- Requisitos de negócio: [Core Business](docs/core_business.md)
 	- System Design da solução: [System Design](docs/system_design.md)
 	- Arquitetura de Monolito Modular: [Monolito Modular](docs/modular-monolith/README.md)
-- [/src](/src) — Código-fonte (.NET) (detalhes em [src/README.md](src/README.md))
-- [/infra](/infra) — Infraestrutura como código (IaC) para Azure (detalhes em [infra/README.md](infra/README.md))
+- `/src` — Código-fonte (.NET) (detalhes em [src/README.md](src/README.md))
+- `/infra` — Infraestrutura como código (IaC) para Azure (detalhes em [infra/README.md](infra/README.md))
 
 ## Visão Geral
 A solução demonstra um backend .NET 8 em arquitetura de Monólito Modular que expõe uma API para execução de checklists de veículos. 
