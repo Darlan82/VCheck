@@ -52,5 +52,88 @@ Fluxo simplificado de inicialização:
 2. Jobs de migração dos módulos são executados e aplicam pendências (se existirem).
 3. A API principal somente inicia após a conclusão dos jobs de migração (cadeia de dependências configurada no Host).
 
+### 1.2 Autenticação e Autorização (Keycloak)
+
+A solução de identidade segue o System Design (uso de IdP externo) e os requisitos de negócio de controlar perfis Executor e Supervisor.
+
+#### 1.2.1 Orquestração pelo Host Aspire
+No `Program.cs` do Host:
+```csharp
+var keycloak = builder.AddKeycloak("keycloak", adminUsername: username, adminPassword: password)
+    .WithDataVolume()
+    .WithRealmImport("./KeycloackConfiguration/transport-realm.json");
+```
+Isso executa um container Keycloak, persiste dados (volume) e importa automaticamente o realm `transport` a partir do arquivo JSON.
+A API (`vcheck-api`) declara dependência com `.WithReference(keycloak).WaitFor(keycloak)` garantindo que Keycloak esteja pronto antes de subir a API.
+
+#### 1.2.2 Realm importado: `transport`
+Arquivo: `src/Host/KeycloackConfiguration/transport-realm.json`.
+Contém:
+- Roles de realm:
+  - `executor` (executa e preenche checklists)
+  - `supervisor` (aprova ou reprova checklists)
+- Usuários iniciais (senha `123`):
+  - `user.executor` -> role `executor`
+  - `user.supervisor` -> role `supervisor`
+  - `user.comum` -> role padrão (`default-roles-transport`) sem permissões específicas de checklist
+- Client confidencial `vcheck-api` (publicClient=false) com:
+  - `secret`: `S3cr3t`
+  - `directAccessGrantsEnabled`: true (habilita Resource Owner Password / password flow)
+  - Mappers:
+    - Audience para incluir `vcheck-api` no access token
+    - Realm roles em claim `roles` (multivalued)
+
+Esses elementos suportam:
+- RF-01..RF-06 (executor inicia/preenche; supervisor aprova) através de segregação por roles
+- RNF Concorrência / Auditabilidade ao permitir tokens JWT com claims de usuário e roles
+
+#### 1.2.3 Configuração da API (JWT)
+Em `src/API/Program.cs`:
+```csharp
+builder.Services.AddAuthentication()
+    .AddKeycloakJwtBearer(serviceName: "keycloak", realm: "transport", options =>
+    {
+        options.Audience = "vcheck-api";
+        options.Authority = "http://localhost:8080/realms/transport"; // ajustado dinamicamente via configuração Aspire
+        options.TokenValidationParameters.RoleClaimType = "roles"; // claim usada para [Authorize(Roles="...")]
+        if (builder.Environment.IsDevelopment()) options.RequireHttpsMetadata = false;
+    });
+```
+O Swagger foi configurado com fluxo OAuth2 Password apontando para os endpoints do realm.
+
+#### 1.2.4 Autenticação via Swagger UI
+Passos:
+1. Suba o Host: `dotnet run` em `VCheck.Host` (Aspire inicia Keycloak e API).
+2. Abra o Swagger da API (ex.: https://localhost:<porta>/swagger).
+3. Clique em "Authorize".
+4. Preencha:
+   - client_id: `vcheck-api`
+   - client_secret: `S3cr3t`
+   - username: `user.executor` (ou `user.supervisor`)
+   - password: `123`
+   - scopes: selecione `openid profile email` se desejar.
+5. Após autorizar, o botão mostrará o lock fechado e as requisições incluirão o Bearer token.
+
+Use `user.executor` para fluxos de execução de checklist e `user.supervisor` para endpoints futuros de aprovação.
+
+#### 1.2.5 Obtenção de token via linha de comando (opcional)
+```bash
+curl -X POST \
+  http://localhost:8080/realms/transport/protocol/openid-connect/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=password" \
+  -d "client_id=vcheck-api" \
+  -d "client_secret=S3cr3t" \
+  -d "username=user.executor" \
+  -d "password=123"
+```
+Resposta conterá `access_token` (JWT) usado no header: `Authorization: Bearer <token>`.
+
+#### 1.2.6 Evolução
+- Podem ser adicionadas novas roles (ex.: auditor) estendendo o mesmo processo de realm import.
+- Para produção recomenda-se TLS, rotação do client secret e desabilitar password flow substituindo por Authorization Code + PKCE conforme estratégia de frontend.
+
+Isso alinha a implementação ao System Design (IdP externo, segurança gerenciada) e aos requisitos de negócio de perfis distintos Executor/Supervisor.
+
 
 

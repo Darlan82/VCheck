@@ -6,6 +6,7 @@ using VCheck.Modules.Fleet;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Desabilite o mapeamento de claims para usar os nomes exatos do JWT. Padrão novo de autenticação
 JsonWebTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 //Módulos
@@ -43,8 +44,7 @@ builder.Services.AddAuthentication()
                         }
                     });
 
-// Obtém as URLs do Keycloak da configuração
-
+// Obtém as configurações do Keycloak
 var realm = builder.Configuration["Keycloak:Realm"] ?? "transport";
 var clientId = builder.Configuration["Keycloak:Audience"] ?? "vcheck-api";
 var clientSecret = builder.Configuration["Keycloak:Secret"] ?? "S3cr3t";

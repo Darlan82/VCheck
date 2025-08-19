@@ -19,6 +19,9 @@
   <Folder Name="/infra/environments/modular-monolith/">
     <File Path="docs/modular-monolith/README.md" />
   </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
   <Folder Name="/src/">
 	<File Path="src/AddMigrationFleetModule.ps1" />
 	<File Path="src/AddMigrationChecklistsModule.ps1" />
