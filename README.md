@@ -10,7 +10,7 @@ Este projeto é fictício e utilizado apenas para fins de demonstração, desafios t
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 
 ## Licença
-Este projeto está licenciado sob a licença [MIT](LICENSE.txt).
+Este projeto está licenciado sob a licença [MIT](LICENSE).
 
 ## Estrutura do Repositório
 
