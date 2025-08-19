@@ -63,12 +63,17 @@ namespace VCheck.Api.Controllers
             OperationId = "UpdateChecklistItem")]
         [SwaggerResponse(204, "Item atualizado.")]
         [SwaggerResponse(400, "Erro de negócio, concorrência ou estado inválido.")]
+        [SwaggerResponse(409, "Versão desatualizada. Obtenha a versão mais recente do checklist e tente novamente.")]
         public async Task<IActionResult> UpdateItem(Guid checklistId, Guid itemId, [FromBody] UpdateChecklistItemCommand command)
         {
             var userId = GetUserId();
             var result = await _checklistsModule.UpdateChecklistItem(checklistId, itemId, command.Status, command.Observations, command.ChecklistsRowVersion, userId);
             if (result != Error.None)
+            {
+                if (result == ChecklistsErrors.RowVersionConflict)
+                    return Conflict(new { error = result.Code, message = result.Description });
                 return BadRequest(new { error = result.Code, message = result.Description });
+            }
 
             return NoContent();
         }
@@ -81,12 +86,17 @@ namespace VCheck.Api.Controllers
             OperationId = "SubmitChecklist")]
         [SwaggerResponse(204, "Checklist submetido.")]
         [SwaggerResponse(400, "Erro de negócio, concorrência ou estado inválido.")]
+        [SwaggerResponse(409, "Versão desatualizada. Obtenha a versão mais recente do checklist e tente novamente.")]
         public async Task<IActionResult> Submit(Guid checklistId, [FromBody] SubmitChecklistCommand command)
         {
             var userId = GetUserId();
             var result = await _checklistsModule.SubmitForApproval(checklistId, command.RowVersion, userId);
             if (result != Error.None)
+            {
+                if (result == ChecklistsErrors.RowVersionConflict)
+                    return Conflict(new { error = result.Code, message = result.Description });
                 return BadRequest(new { error = result.Code, message = result.Description });
+            }
 
             return NoContent();
         }

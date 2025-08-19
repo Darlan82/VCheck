@@ -57,7 +57,14 @@ namespace VCheck.Modules.Checklists
             item.Status = (ChecklistItemStatus) status;
             item.Observations = observations;
 
-            await _dbContext.SaveChangesAsync();
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return ChecklistsErrors.RowVersionConflict;
+            }
 
             return Error.None;
         }
@@ -69,11 +76,21 @@ namespace VCheck.Modules.Checklists
             if (checklist == null) return ChecklistsErrors.ChecklistNotFound;
             if (checklist.ExecutorId != executorId) return ChecklistsErrors.InvalidExecutor;
 
+            if (checklist.Status != ChecklistStatus.EmAndamento)
+                return ChecklistsErrors.ChecklistAlreadySubmitted;
+
             _dbContext.Entry(checklist).Property(c => c.RowVersion).OriginalValue = rowVersion;
             checklist.Status = ChecklistStatus.AguardandoAprovacao;
             checklist.FinishedAt = DateTime.UtcNow;
             
-            await _dbContext.SaveChangesAsync();
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return ChecklistsErrors.RowVersionConflict;
+            }
 
             return Error.None;
         }
@@ -83,6 +100,9 @@ namespace VCheck.Modules.Checklists
             var checklist = await _dbContext.Set<Checklist>().FirstOrDefaultAsync(c => c.Id == checklistId);
 
             if (checklist == null) return ChecklistsErrors.ChecklistNotFound;
+
+            if (checklist.Status != ChecklistStatus.AguardandoAprovacao)
+                return ChecklistsErrors.ChecklistNotInProgress;
 
             checklist.SupervisorId = supervisorId;
             checklist.Status = ChecklistStatus.Aprovado;
