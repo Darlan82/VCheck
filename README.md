@@ -14,13 +14,13 @@ Este projeto está licenciado sob a licença [MIT](LICENSE).
 
 ## Estrutura do Repositório
 
-- [/docs](/docs)  — Documentação.
+- [/docs](/docs)  — Documentação (ver índice em [docs/README.md](docs/README.md)).
 	- Guia rápido de execução: [Getting Started](docs/getting-started.md)
 	- Requisitos de negócio: [Core Business](docs/core_business.md)
 	- System Design da solução: [System Design](docs/system_design.md)
 	- Arquitetura de Monolito Modular: [Monolito Modular](docs/modular-monolith/README.md)
-- [/src](/src) — Código-fonte (.NET)
-- [/infra](/infra) — Infraestrutura como código (IaC) para provisionamento de recursos no Azure.
+- [/src](/src) — Código-fonte (.NET) (detalhes em [src/README.md](src/README.md))
+- [/infra](/infra) — Infraestrutura como código (IaC) para Azure (detalhes em [infra/README.md](infra/README.md))
 
 ## Visão Geral
 A solução demonstra um backend .NET 8 em arquitetura de Monólito Modular que expõe uma API para execução de checklists de veículos. 
@@ -43,4 +43,11 @@ Detalhes de infraestrutura (migrações, realm, usuários) em: [Infraestrutura / Ho
 - Builds e pipelines com análise estática (SonarQube)
 - Endpoints de consulta para supervisores
 - Ajustar fluxo de autenticação para Authorization Code + PKCE ao introduzir frontend SPA
+
+## Navegação Recomendada
+1. Leia [Core Business](docs/core_business.md)
+2. Leia [System Design](docs/system_design.md)
+3. Siga o [Getting Started](docs/getting-started.md)
+4. Explore a organização de módulos em [src/README.md](src/README.md)
+5. Consulte [infra/README.md](infra/README.md) para visão de Terraform (cloud)
 
